@@ -5,12 +5,22 @@
 
 def solution(n, times):
     answer = 0
-    lastTime = [0] * len(times)
-    for i in range(n):
-        _lastTime = [lastTime[j] + times[j] for j in range(len(times))]
-        answer = min(_lastTime)
-        index = _lastTime.index(answer)
-        lastTime[index] = answer
+    high = max(times) * n
+    low = 0
+    while low <= high:
+        mid = int(high + low) // 2
+        cnt = sum([mid // t for t in times])
+
+        if cnt >= n:
+            high = mid - 1
+        else:
+            low = mid + 1
+
+    cnt = sum([low // t for t in times])
+    if cnt >= n:
+        answer = low
+    else:
+        answer = -1
 
     return answer
 
