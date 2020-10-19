@@ -22,3 +22,7 @@ if __name__ == '__main__':
     result = solution(3, [[1, 1, 0], [1, 1, 1], [0, 1, 1]])
     print(f'result = {result}')
     assert result == 1
+    
+    result = solution(6, [[1, 0, 1, 1, 0, 0], [0, 1, 0, 0, 1, 1], [1, 0, 1, 1, 1, 1], [1, 0, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1]])
+    print(f'result = {result}')
+    assert result == 1
