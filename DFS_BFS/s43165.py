@@ -6,17 +6,17 @@
 
 def solution(numbers, target):
     answer = 0
-    queue = [[]]
+    queue = [0]
     for n in numbers:
         temp_queue = []
         while queue:
             temp = queue.pop(0)
-            temp_queue.append(temp + [n])
-            temp_queue.append(temp + [-n])
+            temp_queue.append(temp + n)
+            temp_queue.append(temp - n)
         queue = temp_queue
 
     while queue:
-        _sum = sum(queue.pop(0))
+        _sum = queue.pop(0)
         if _sum == target:
             answer += 1
 
