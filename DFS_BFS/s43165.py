@@ -5,18 +5,19 @@
 
 
 def solution(numbers, target):
+    from collections import deque
     answer = 0
-    queue = [0]
+    queue = deque([0])
     for n in numbers:
-        temp_queue = []
+        temp_queue = deque([])
         while queue:
-            temp = queue.pop(0)
+            temp = queue.popleft()
             temp_queue.append(temp + n)
             temp_queue.append(temp - n)
         queue = temp_queue
 
     while queue:
-        _sum = queue.pop(0)
+        _sum = queue.popleft()
         if _sum == target:
             answer += 1
 
