@@ -4,20 +4,19 @@
 '''
 
 def solution(a):
-    answer = 0
-    for _a in a:    # 살아 남을 수 있는지 판단할 숫자
-        temp = a.copy()
-        chance = 1          # 더 작은 것을 삭제할 기회는 한번뿐!
-        if min(a) == _a:    # 제일 작은 수라면 무조건 남을 수 있다.
-            answer += 1
-            continue
-        index = temp.index(_a)  # 살아 남아야할 숫자를 기준으로 좌우측의 최소 숫자를 정리한다.
-        _left = temp[:index]
-        _right = temp[index+1:]
-        if _left and _right and max(min(_left), _a, min(_right)) == _a: # 살아 남을 수 없다.
+    if len(a) < 3:
+        return len(a)
+    answer = 2
+    left_min = a[0]
+    right_min = min(a[1:])
+    for i in range(1, len(a) - 1):
+        if max(left_min, a[i], right_min) == a[i]:
             pass
         else:
-            answer += 1
+            answer = answer + 1
+        left_min = min(left_min, a[i])
+        if right_min == a[i+1] and i < len(a) - 2:
+            right_min = min(a[i+2:])
 
     return answer
 
