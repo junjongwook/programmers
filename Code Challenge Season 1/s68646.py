@@ -8,15 +8,19 @@ def solution(a):
         return len(a)
     answer = 2
     left_min = a[0]
-    right_min = min(a[1:])
+    right_sort = sorted(a[2:])
+    from collections import deque
+    right_sort = deque(right_sort)
+    right_sort.append(float('inf'))
+    right_min = right_sort[0]
     for i in range(1, len(a) - 1):
         if max(left_min, a[i], right_min) == a[i]:
             pass
         else:
             answer = answer + 1
         left_min = min(left_min, a[i])
-        if right_min == a[i+1] and i < len(a) - 2:
-            right_min = min(a[i+2:])
+        right_sort.remove(a[i+1])
+        right_min = right_sort[0]
 
     return answer
 
