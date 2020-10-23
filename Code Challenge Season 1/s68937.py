@@ -6,12 +6,15 @@
 
 def solution(n, edges):
     answer = 0
+    from bisect import insort
+    temp = []
     link = [[float('inf')] * (n + 1) for _ in range(n + 1)]
     for i in range(n + 1):
         link[i][i] = 0
     for y, x in edges:
         link[y][x] = 1
         link[x][y] = 1
+        insort(temp, 1)
 
     # Floyd-warshall
     for m in range(1, n + 1):
@@ -20,18 +23,14 @@ def solution(n, edges):
             for e in range(1, n + 1):
                 if e == m: continue
                 if s == e: continue
-                link[s][e] = min(link[s][m] + link[m][e], link[s][e])
-                link[e][s] = link[s][e]
-
-    # 이제 번호 3개를 추출해서 거리의 중간을 가지고 배열을 만든다.
-    from itertools import combinations
-    answer = 0
-    for t in combinations(range(1, n + 1), 3):
-        d1 = link[t[0]][t[1]]
-        d2 = link[t[0]][t[2]]
-        d3 = link[t[1]][t[2]]
-        if sorted([d1, d2, d3])[1] > answer:
-            answer = sorted([d1, d2, d3])[1]
+                if s > e: continue
+                if link[s][e] == float('inf'):
+                    _temp = link[s][m] + link[m][e]
+                    if _temp != float('inf'):
+                        link[s][e] = _temp
+                        link[e][s] = _temp
+                        insort(temp, _temp)
+    answer = temp[-2]
 
     return answer
 
