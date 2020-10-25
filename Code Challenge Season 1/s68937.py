@@ -14,43 +14,42 @@ def solution(n, edges):
         edgeDict[v2].append(v1)
 
     # 첫번째 노드에서 제일 먼 곳의 노드를 하나 찾는다.
-    start = edges[0][0]
-    from collections import deque
-    queue = deque([[start]])
-    end = start
-    while queue:
-        vertices = queue.popleft()
-        end = vertices[-1]
-        for next in edgeDict[end]:
-            if next not in vertices:
-                _temp = vertices.copy()
-                _temp.append(next)
-                queue.append(_temp)
+    visited = [0] * (n+1)
+    stack = [(edges[0][0], 0)]
+    lastVertex = edges[0][0]
+    longDistance = 0
+    while stack:
+        vertex, distance = stack.pop()
+        visited[vertex] = 1
+        if distance > longDistance:
+            lastVertex = vertex
+            longDistance = distance
+        for nextEdge in edgeDict[vertex]:
+            if visited[nextEdge] == 0:
+                stack.append((nextEdge, distance + 1))
 
     # 찾은 노드에서 다시 제일 먼 노드를 찾는다. 이 때 거리가 트리의 지름이 된다.
-    start = end
-    queue = deque([[start]])
-    maxDistance = 0
-    end = start
-    while queue:
-        vertices = queue.popleft()
-        _distance = len(vertices) - 1
-        if maxDistance < _distance:
-            maxDistance = _distance
-            check = False   # 새로 등장한 거리라면 값이 중복되지 않는다.
+    visited = [0] * (n + 1)
+    stack = [(lastVertex, 0)]
+    longDistance = 0
+    onlyLast = True
+    while stack:
+        vertex, distance = stack.pop()
+        visited[vertex] = 1
+        if distance > longDistance:
+            lastVertex = vertex
+            longDistance = distance
+            onlyLast = True
         else:
-            check = True    # 이전 값과 동일하므로 값이 중복된다. 나중에 보면 트리 지름이 2개 이상이 된다.
-        end = vertices[-1]
-        for next in edgeDict[end]:
-            if next not in vertices:
-                _temp = vertices.copy()
-                _temp.append(next)
-                queue.append(_temp)
+            onlyLast = False
+        for nextEdge in edgeDict[vertex]:
+            if visited[nextEdge] == 0:
+                stack.append((nextEdge, distance + 1))
 
-    if check:   # 트리 지름이 2개 이상 있을 경우
-        answer = maxDistance
+    if onlyLast:   # 트리 지름이 1개만 존재할 경우
+        answer = longDistance - 1
     else:
-        answer = maxDistance - 1
+        answer = longDistance
 
     return answer
 
