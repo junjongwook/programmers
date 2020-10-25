@@ -13,51 +13,40 @@ def solution(n, edges):
         edgeDict[v1].append(v2)
         edgeDict[v2].append(v1)
 
+    def 제일_먼곳_찾기(시작):
+        '''
+        제일 먼곳을 찾는데 결과는 여러개 일 수 있음
+        :param 시작: 시작위치
+        :return: [(위치, 거리)]
+        '''
+        방문여부 = [0] * ( n + 1)
+        stack = [(시작, 0)]
+        결과 = []
+        max거리 = 0
+        while stack:
+            위치, 거리 = stack.pop()
+            방문여부[위치] = 1
+            if 거리 > max거리:
+                max거리 = 거리
+                결과 = [(위치, 거리)]
+            else:
+                결과.append((위치, 거리))
+            for 다음위치 in edgeDict[위치]:
+                if 방문여부[다음위치] == 0: # 방문한 곳이 아니면
+                    stack.append((다음위치, 거리 + 1))
+        return 결과
+            
     # 첫번째 노드에서 제일 먼 곳의 노드를 하나 찾는다.
-    visited = [0] * (n+1)
-    stack = [(edges[0][0], 0)]
-    lastVertex = edges[0][0]
-    longDistance = 0
-    while stack:
-        vertex, distance = stack.pop()
-        visited[vertex] = 1
-        if distance > longDistance:
-            lastVertex = vertex
-            longDistance = distance
-        for nextEdge in edgeDict[vertex]:
-            if visited[nextEdge] == 0:
-                stack.append((nextEdge, distance + 1))
+    트리지름_위치들 = 제일_먼곳_찾기(edges[0][0])
 
-    # 찾은 노드에서 다시 제일 먼 노드를 찾는다. 이 때 거리가 트리의 지름이 된다.
-    import bisect
-    temp = []
-    visited = [0] * (n + 1)
-    stack = [(lastVertex, 0)]
-    longDistance = -1
-    onlyLast = True
-    while stack:
-        vertex, distance = stack.pop()
-        bisect.insort(temp, distance)
-        visited[vertex] = 1
-        if distance > longDistance:
-            lastVertex = vertex
-            longDistance = distance
-            onlyLast = True
+    # 트리지름의 끝점들을 대상으로 다른 대상의 끝점을 찾아본다.
+    for 트리지름_위치1, _거리 in 트리지름_위치들:
+        임시결과 = 제일_먼곳_찾기(트리지름_위치1)
+        if len(임시결과) > 1:
+            answer = 임시결과[0][1]
+            break
         else:
-            onlyLast = False
-        for nextEdge in edgeDict[vertex]:
-            if visited[nextEdge] == 0:
-                stack.append((nextEdge, distance + 1))
-
-    # if onlyLast:   # 트리 지름이 1개만 존재할 경우
-    #     answer = longDistance - 1
-    # else:
-    #     answer = longDistance
-
-    if temp[-1] == temp[-2]:
-        answer = longDistance
-    else:
-        answer = longDistance - 1
+            answer = 임시결과[0][1] - 1
 
     return answer
 
