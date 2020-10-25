@@ -13,40 +13,43 @@ def solution(n, edges):
         edgeDict[v1].append(v2)
         edgeDict[v2].append(v1)
 
-    def 제일_먼곳_찾기(시작):
-        '''
-        제일 먼곳을 찾는데 결과는 여러개 일 수 있음
-        :param 시작: 시작위치
-        :return: [(위치, 거리)]
-        '''
-        방문여부 = [0] * ( n + 1)
-        stack = [(시작, 0)]
-        결과 = []
-        max거리 = 0
-        while stack:
-            위치, 거리 = stack.pop()
-            방문여부[위치] = 1
-            if 거리 > max거리:
-                max거리 = 거리
-                결과 = [(위치, 거리)]
-            else:
-                결과.append((위치, 거리))
-            for 다음위치 in edgeDict[위치]:
-                if 방문여부[다음위치] == 0: # 방문한 곳이 아니면
-                    stack.append((다음위치, 거리 + 1))
-        return 결과
-            
-    # 첫번째 노드에서 제일 먼 곳의 노드를 하나 찾는다.
-    트리지름_위치들 = 제일_먼곳_찾기(edges[0][0])
+    from collections import deque
 
-    # 트리지름의 끝점들을 대상으로 다른 대상의 끝점을 찾아본다.
-    for 트리지름_위치1, _거리 in 트리지름_위치들:
-        임시결과 = 제일_먼곳_찾기(트리지름_위치1)
-        if len(임시결과) > 1:
-            answer = 임시결과[0][1]
+    def 거리구하기(start) -> []:
+        visited = [0] * (n + 1)
+        distance = [0] * (n + 1)
+        queue = deque([])
+        queue.append(start)
+        visited[start] = 1
+        while queue:
+            vertex = queue.popleft()
+            nextVertex = edgeDict[vertex]
+            for _next in nextVertex:
+                if visited[_next] == 1: continue
+                distance[_next] = distance[vertex] + 1
+                visited[_next] = 1
+                queue.append(_next)
+
+        return distance
+
+    result = 거리구하기(edges[0][0])
+    _max = max(result)  # 최대 거리 구하기
+    _startList = []     # 최대 거리 위치 목록
+    _startIndex = 0
+    try:
+        index = result.index(_max, _startIndex)
+        _startList.append(index)
+    except ValueError:
+        pass
+
+    for _start in _startList:
+        result = 거리구하기(_start)
+        _max = max(result)
+        _count = result.count(_max)
+        if _count > 1:
+            answer = _max
             break
-        else:
-            answer = 임시결과[0][1] - 1
+        answer = max(answer, _max - 1)
 
     return answer
 
