@@ -29,12 +29,15 @@ def solution(n, edges):
                 stack.append((nextEdge, distance + 1))
 
     # 찾은 노드에서 다시 제일 먼 노드를 찾는다. 이 때 거리가 트리의 지름이 된다.
+    import bisect
+    temp = []
     visited = [0] * (n + 1)
     stack = [(lastVertex, 0)]
-    longDistance = 0
+    longDistance = -1
     onlyLast = True
     while stack:
         vertex, distance = stack.pop()
+        bisect.insort(temp, distance)
         visited[vertex] = 1
         if distance > longDistance:
             lastVertex = vertex
@@ -46,10 +49,15 @@ def solution(n, edges):
             if visited[nextEdge] == 0:
                 stack.append((nextEdge, distance + 1))
 
-    if onlyLast:   # 트리 지름이 1개만 존재할 경우
-        answer = longDistance - 1
-    else:
+    # if onlyLast:   # 트리 지름이 1개만 존재할 경우
+    #     answer = longDistance - 1
+    # else:
+    #     answer = longDistance
+
+    if temp[-1] == temp[-2]:
         answer = longDistance
+    else:
+        answer = longDistance - 1
 
     return answer
 
