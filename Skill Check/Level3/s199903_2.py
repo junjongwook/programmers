@@ -4,12 +4,21 @@
 def solution(m, n, puddles):
     BASE = 1_000_000_007
     ground = [[0] * (m + 1) for _ in range(n + 1)]
+    check = True
     for i in range(2, m + 1):
-        if [i, 1] in puddles: continue
-        ground[1][i] = 1
+        if check:
+            if [i, 1] in puddles:
+                check = False
+            else:
+                ground[1][i] = 1
+
+    check = True
     for j in range(2, n + 1):
-        if [1, j] in puddles: continue
-        ground[j][1] = 1
+        if check:
+            if [1, j] in puddles:
+                check = False
+            else:
+                ground[j][1] = 1
 
     for _n in range(2, n + 1):
         for _m in range(2, m + 1):
