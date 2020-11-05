@@ -9,14 +9,13 @@ def solution(s):
     size = len(s)
     temp = [[0] * size for _ in range(size)]
 
-    for i in range(size):
-        for j in range(i + 1, size):
-            if s[j] == s[i]:
-                temp[i][j] = temp[i][j-1]
+    for i in range(1, size):
+        for j in range(0, size - i):
+            # print((j, i + j))
+            if s[j] != s[i + j]:
+                temp[j][i + j] = i
             else:
-                temp[i][j] = j - i
-            if i > 0 and temp[i][j] > temp[i-1][j]:
-                temp[i-1][j] = temp[i][j]
+                temp[j][i + j] = max(temp[j+1][i + j], temp[j][i + j - 1])
 
     answer = sum([sum(t) for t in temp])
 
@@ -32,3 +31,4 @@ if __name__ == '__main__':
 
     result = solution("oo")
     print(f'result = {result}')
+    assert result == 0
