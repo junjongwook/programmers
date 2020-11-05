@@ -10,12 +10,13 @@ def solution(s):
     temp = [[0] * size for _ in range(size)]
 
     for i in range(size):
-        for j in range(size):
-            if i >= j: continue
+        for j in range(i + 1, size):
             if s[j] == s[i]:
                 temp[i][j] = temp[i][j-1]
             else:
                 temp[i][j] = j - i
+            if i > 0 and temp[i][j] > temp[i-1][j]:
+                temp[i-1][j] = temp[i][j]
 
     answer = sum([sum(t) for t in temp])
 
