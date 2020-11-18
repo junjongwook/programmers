@@ -4,11 +4,8 @@
 """
 
 def change(m):
-    m = m.replace('C#', 'c')
-    m = m.replace('D#', 'd')
-    m = m.replace('F#', 'f')
-    m = m.replace('G#', 'g')
-    m = m.replace('A#', 'a')
+    m = m.replace('C#', 'c').replace('D#', 'd').replace('F#', 'f').replace('G#', 'g').replace('A#', 'a')
+
     return m
 
 def solution(m, musicinfos):
@@ -24,6 +21,7 @@ def solution(m, musicinfos):
             temp = self.music
             while len(temp) < self.elapsed():
                 temp += self.music
+            temp = temp[:self.elapsed()]
 
             return m in temp
 
@@ -62,3 +60,6 @@ if __name__ == '__main__':
     result = solution("CC#BCC#BCC#BCC#B", ["03:00,03:30,FOO,CC#B", "04:00,04:08,BAR,CC#BCC#BCC#B"])
     print(f'result = {result}')
     assert result == "FOO"
+
+    result = solution("CDEFGAC", ["12:00,12:06,HELLO,CDEFGA"])
+    print(f'result = {result}')
