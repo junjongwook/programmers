@@ -33,7 +33,7 @@ def solution(key, lock):
                     for _w in range(start_w, min(lock_width, start_w + key_width)):
                         key_h = _h - start_h
                         key_w = _w - start_w
-                        if key[key_h][key_w] != lock[_h][_w]:
+                        if key[key_h][key_w] == lock[_h][_w]:
                             answer = False
                             break
                     if not answer:
