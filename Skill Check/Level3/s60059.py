@@ -8,22 +8,34 @@ def solution(key, lock):
     lock_width = len(lock)
     key_width = len(key)
 
-    def match(start_h, start_w):
-        for h in range(start_h, min(lock_width, start_h + key_width)):
-            for w in range(start_w, min(lock_width, start_w + key_width)):
-                key_h = h - start_h
-                key_w = w - start_w
-                if key[key_h][key_w] == lock[h][w]:
-                    return False
+    def key_value(start_h, start_w, h, w):
+        _h = h - start_h
+        _w = w - start_w
+        if 0 <= _h < key_width and 0 <= _w < key_width:
+            return key[_h][_w]
 
-        return True
+        return None
 
     for i in range(4):  # 3번만 시계방향으로 돌려보면 된다.
-        for start_h in range(lock_width):
-            for start_w in range(lock_width):
-                answer = match(start_h, start_w)
-                if answer:
+        # key block 의 시작위치를 설정한다.
+        for start_key_h in range(-key_width + 1, lock_width):
+            for start_key_w in range(-key_width + 1, lock_width):
+                answer = True   # Loop 를 성공적으로 돌면 True 를 반환할 예정이다.
+                # lock 블록은 모두 체크한다.
+                for h in range(lock_width):
+                    for w in range(lock_width):
+                        value = key_value(start_key_h, start_key_w, h, w)
+                        if value == None and lock[h][w] == 0:
+                            answer = False
+                            break
+                        if value == lock[h][w]: # 같은 돌기이거나 홈이면
+                            answer = False
+                            break
+                    if not answer:
+                        break
+                if answer:  # lock 블록을 무사히 마치면
                     return True
+
         key = list(map(list, zip(*key[::-1])))
 
     return False
