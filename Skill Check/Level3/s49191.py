@@ -12,19 +12,20 @@ def solution(n, results):
         win[w][l] = 1
         lose[l][w] = 1
 
-    _cont = True
-    while _cont:
-        _cont = False
+    for by in range(1, n+1):
         for s in range(1, n+1):
             for e in range(1, n+1):
-                for b in range(1, n+1):
-                    if s == e or e == b or e == s: continue
-                    if win[s][b] == 1 and win[b][e] == 1 and win[s][e] == 0:
-                        win[s][e] = 1
-                        _cont = True
-                    if lose[s][b] == 1 and lose[b][e] == 1 and lose[s][e] == 0:
-                        lose[s][e] = 1
-                        _cont = True
+                if s == e or s == by or e == by:
+                    continue
+                if win[s][e] == 1:
+                    pass
+                elif win[s][by] == 1 and win[by][e] == 1:
+                    win[s][e] = 1
+                if lose[s][e] == 1:
+                    pass
+                elif lose[s][by] == 1 and lose[by][e] == 1:
+                    lose[s][e] = 1
+
     winCount = [0] * (n+1)
     loseCount = [0] * (n+1)
     for i in range(1, n+1):
