@@ -11,7 +11,7 @@ def solution(lines):
         _e = line[11:23]
         e = int(_e[0:2]) * 60 * 60 + int(_e[3:5]) * 60 + int(_e[6:8])
         e = e * 1000 + int(_e[-3:])
-        elapsed = float(line[24:][:-1]) * 1000
+        elapsed = int(float(line[24:][:-1]) * 1000)
         s = e - elapsed + 1
         bisect.insort(data, (s, e))
         points.add(s)
@@ -22,7 +22,7 @@ def solution(lines):
     for point in points:
         _s = point
         _e = point + 1000 - 1
-        temp = [d for d in data if d[0] <= _s <= d[1] or d[0] <= _e <= d[1]]
+        temp = [d for d in data if _s <= d[0] <= _e or _s <= d[1] <= _e or (d[0] <= _s and d[1] >= _e)]
         if len(temp) > answer:
             answer = len(temp)
 
