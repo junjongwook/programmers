@@ -2,38 +2,43 @@
 """
 경주로건설 : https://programmers.co.kr/learn/courses/30/lessons/67259?language=python3
 """
-from collections import deque
+answer = float('inf')
 
 
 def solution(board):
+    global answer
     answer = float('inf')
-
     dh = [0, 1, 0, -1]
     dw = [1, 0, -1, 0]
     N = len(board)
+    visited = [[0] * N for _ in range(N)]
+    visited[0][0] = 1
 
-    queue = deque([])
-    queue.append([[(0, 0)], -1, 0])     # 현재 위치, 이전 방향, 현재까지 비용
-
-    while queue:
-        paths, direction, total = queue.popleft()
-        if paths[-1] == (N - 1, N - 1):
+    def DFS(h, w, d, total):
+        global answer
+        # print(f'[({h}, {w}), {d}, {total}] -> ', end=' ')
+        if h == w == N - 1:
             answer = min(answer, total)
-            # print(f'paths = {paths}, direction = {direction}, total = {total}')
-            continue
-        h, w = paths[-1]
-        for d in range(4):
-            _h = h + dh[d]
-            _w = w + dw[d]
-            if (_h, _w) in paths:
-                continue
-            if 0 <= _h < N and 0 <= _w < N and board[_h][_w] == 0:
+            # print(f'answer = {answer}')
+            return
+
+        for _d in range(4):
+            _h = h + dh[_d]
+            _w = w + dw[_d]
+            if 0 <= _h < N and 0 <= _w < N and board[_h][_w] == 0 and visited[_h][_w] == 0:
                 _total = total + 100
-                if direction != -1 and d != direction:
+                if _d != d:
                     _total += 500
                 if _total > answer:
                     continue
-                queue.append([paths + [(_h, _w)], d, _total])
+                visited[_h][_w] = 1
+                DFS(_h, _w, _d, _total)
+                visited[_h][_w] = 0
+
+    if board[0][1] == 0:
+        DFS(0, 1, 0, 100)
+    if board[1][0] == 0:
+        DFS(1, 0, 1, 100)
 
     return answer
 
