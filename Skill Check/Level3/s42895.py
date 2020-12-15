@@ -3,34 +3,43 @@
 N으로 표현 : https://programmers.co.kr/learn/courses/30/lessons/42895?language=python3
 """
 
-def operator(s1, s2):
-    result = set()
-    for _s1 in s1:
-        for _s2 in s2:
-            result.add(_s1 + _s2)
-            result.add(_s1 - _s2)
-            result.add(_s1 * _s2)
-            if _s2 != 0:
-                result.add(_s1 // _s2)
-    return result
-
 
 def solution(N, number):
     if N == number: return 1
-    answer = -1
-    S = [{}, {N}]
-    for i in range(2, 9):
-        currS = {int(str(N)*i)}
-        for op1 in range(1, i):
-            op2 = i - op1
-            temp = operator(S[op1], S[op2])
-            currS.update(temp)
+    nDict = dict()
+    nDict[1] = {N}
+    nDict[2] = {N + N, N - N, N * N, N / N, int(str(N) * 2)}
+    if number in nDict[2]:
+        return 2
 
-            if number in currS:
-                return i
-        S.append(currS)
+    for i in range(3, 9):
+        temp = {int(str(N) * i)}
+        if number in temp:
+            return i
+        for j in range(1, i//2 + 1):
+            j2 = i - j
+            for n1 in nDict[j]:
+                for n2 in nDict[j2]:
+                    _n = n1 + n2
+                    if _n == number: return i
+                    temp.add(_n)
+                    _n = n1 - n2
+                    if _n == number: return i
+                    temp.add(_n)
+                    _n = n1 * n2
+                    if _n == number: return i
+                    temp.add(_n)
+                    if n2 != 0:
+                        _n = n1 / n2
+                        if _n == number: return i
+                        temp.add(_n)
+                    if n1 != 0:
+                        _n = n2 / n1
+                        if _n == number: return i
+                        temp.add(_n)
+        nDict[i] = temp
 
-    return answer
+    return -1
 
 
 if __name__ == '__main__':
