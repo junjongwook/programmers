@@ -7,95 +7,97 @@
 def solution(board):
     answer = 0
     N = len(board)
-
-    dxy = [
-        [0, 1, 0],  # 우측으로 이동
-        [1, 0, 0],  # 아래로 이동
-        [0, -1, 0], # 좌측으로 이동
-        [-1, 0, 0], # 위로 이동
-        [1, 0, 1],  # 좌측(상측) 기준 시계방향 회전
-        [1, 0, -1], # 좌측(상측) 기준 반시계 방향 회전
-        [0, 1, 2],  # 우측(하측) 기준 시계방향 회전
-        [0, 1, -2]  # 우측(상측) 기준 반시계 방향 회전
-    ]
-
-    def move(curr, delta):
-        _curr = curr.copy()
-        if delta[2] == 0:           # 단순 이동일 경우
-            _curr[0] += delta[0]
-            _curr[1] += delta[1]
-        elif curr[2] == 0:          # 가로로 되어 있다면
-            _curr[2] = 1
-            if delta == [1, 0, 1]:      # 좌측기준 시계방향
-                pass
-            elif delta == [1, 0, -1]:   # 좌측 기준 반시계 방향
-                _curr[0] = curr[0] - 1
-            elif delta == [0, 1, 2]:    # 우측 시계방향
-                _curr[0] = curr[0] - 1
-                _curr[1] = curr[1] + 1
-            elif delta == [0, 1, -2]:   # 우측 반시계 방향
-                _curr[1] = curr[1] + 1
-        elif curr[2] == 1:          # 세로로 되어 있다면
-            _curr[2] = 0
-            if delta == [1, 0, 1]:      # 상측기준 시계 방향
-                _curr[1] = curr[1] - 1
-            elif delta == [1, 0, -1]:   # 상측 기준 반시계 방향
-                pass
-            elif delta == [0, 1, 2]:    # 하측 시계 방향
-                _curr[0] = curr[0] + 1
-            elif delta == [0, 1, -2]:   # 하측 반시계 방향
-                _curr[0] = curr[0] + 1
-                _curr[1] = curr[1] - 1
-                
-        return _curr
-
-    def isWall(curr):
-        h, w, d = curr
-        if d == 0:
-            _h = h
-            _w = w + 1
-        else:
-            _h = h + 1
-            _w = w
-
-        if h < 0 or w < 0 or _h < 0 or _w < 0:
-            return True
-        if h >= N or w >= N or _h >= N or _w >= N:
-            return True
-        if board[h][w]  == 1 or board[_h][_w] == 1:
-            return True
-
-        return False
-
-    def isGoal(curr):
-        h, w, d = curr
-        if d == 0:
-            _h = h
-            _w = w + 1
-        else:
-            _h = h + 1
-            _w = w
-
-        if (h == w == N-1) or (_h == _w == N-1):
-            return True
-
-        return False
-
     from collections import deque
-    queue = deque([([0, 0, 0], 0)])
-    visited = [[0, 0, 0]]
+    queue = deque([])
+    queue.append([[(0, 0), (1, 0)]])
+
+    def canGo(x, y):
+        if 0 <= x < N and 0 <= y < N and board[y][x] == 0:
+            return True
+        else:
+            return False
+
+    def move(dron, direction):
+        '''
+            direction
+            0 : 오른쪽 이동
+            1 : 아래로 이동
+            2 : 왼쪽 이동
+            3 : 위로 이동
+            4 : 왼쪽 혹은 위쪽 기준 시계 방향 회전
+            5 : 왼쪽 혹은 위쪽 기준 반시계 방향 회전
+            6 : 오른쪽 혹은 아래쪽 기준 시계 방향 회전
+            7 : 오른쪽 혹은 아래쪽 기준 반시계 방향 회전
+        '''
+        (x1, y1), (x2, y2) = dron
+        garo = y1 == y2     # 가로로 되어 있으면 True, 세로로 되어 있으면 False
+        if garo:
+            if direction == 0:
+                if canGo(x2 + 1, y2):
+                    return [(x2, y2), (x2 + 1, y2)]
+            elif direction == 1:
+                if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
+                    return [(x1, y1 + 1), (x2, y2 + 1)]
+            elif direction == 2:
+                if canGo(x1 - 1, y1):
+                    return [(x1 - 1, y1), (x1, y1)]
+            elif direction == 3:
+                if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
+                    return [(x1, y1 -1), (x2, y2 - 1)]
+            elif direction == 4:
+                if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
+                    return [(x1, y1), (x1, y1 + 1)]
+            elif direction == 5:
+                if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
+                    return [(x1, y1 - 1), (x1, y1)]
+            elif direction == 6:
+                if canGo(x1, y1 -1) and canGo(x2, y2 - 1):
+                    return [(x2, y2 - 1), (x2, y2)]
+            elif direction == 7:
+                if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
+                    return [(x2, y2), (x2, y2 + 1)]
+        else:
+            if direction == 0:
+                if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
+                    return [(x1 + 1, y1), (x2 + 1, y2)]
+            elif direction == 1:
+                if canGo(x2, y2 + 1):
+                    return [(x2, y2), (x2, y2 + 1)]
+            elif direction == 2:
+                if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
+                    return [(x1 -1, y1), (x2 - 1, y2)]
+            elif direction == 3:
+                if canGo(x1, y1 - 1):
+                    return [(x1, y1 - 1), (x1, y1)]
+            elif direction == 4:
+                if canGo(x1 - 1, y1) and canGo(x2, y2 - 1):
+                    return [(x1 - 1, y1), (x1, y1)]
+            elif direction == 5:
+                if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
+                    return [(x1, y1), (x1 + 1, y1)]
+            elif direction == 6:
+                if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
+                    return [(x2, y2), (x2 + 1, y2)]
+            elif direction == 7:
+                if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
+                    return [(x2 - 1, y2), (x2, y2)]
+
+        return None
+
     while queue:
-        dron, n = queue.popleft()
-        for _dxy in dxy:
-            _dron = move(dron, _dxy)
-            if isWall(_dron):
-                continue
-            if _dron in visited:
-                continue
-            if isGoal(_dron):
-                return n + 1
-            queue.append((_dron, n+1))
-            visited.append(_dron)
+        dronFoot = queue.popleft()
+        # print(f'dronFoot = {dronFoot}')
+        last = dronFoot[-1]
+        wing1, wing2 = last
+        if wing1 == (N - 1, N - 1) or wing2 == (N - 1, N - 1):
+            return len(dronFoot) - 1
+
+        for i in range(8):
+            _next = move(last, i)
+            if _next is not None and _next not in dronFoot:
+                _dronFoot = dronFoot.copy()
+                _dronFoot.append(_next)
+                queue.append(_dronFoot)
 
     return -1
 
