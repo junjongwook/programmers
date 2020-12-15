@@ -9,7 +9,9 @@ def solution(board):
     N = len(board)
     from collections import deque
     queue = deque([])
-    queue.append([[(0, 0), (1, 0)]])
+    queue.append([((0, 0), (1, 0))])
+    visited = dict()
+    visited[((0, 0), (1, 0))] = 1
 
     def canGo(x, y):
         if 0 <= x < N and 0 <= y < N and board[y][x] == 0:
@@ -34,53 +36,53 @@ def solution(board):
         if garo:
             if direction == 0:
                 if canGo(x2 + 1, y2):
-                    return [(x2, y2), (x2 + 1, y2)]
+                    return ((x2, y2), (x2 + 1, y2))
             elif direction == 1:
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
-                    return [(x1, y1 + 1), (x2, y2 + 1)]
+                    return ((x1, y1 + 1), (x2, y2 + 1))
             elif direction == 2:
                 if canGo(x1 - 1, y1):
-                    return [(x1 - 1, y1), (x1, y1)]
+                    return ((x1 - 1, y1), (x1, y1))
             elif direction == 3:
                 if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
-                    return [(x1, y1 -1), (x2, y2 - 1)]
+                    return ((x1, y1 -1), (x2, y2 - 1))
             elif direction == 4:
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
-                    return [(x1, y1), (x1, y1 + 1)]
+                    return ((x1, y1), (x1, y1 + 1))
             elif direction == 5:
                 if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
-                    return [(x1, y1 - 1), (x1, y1)]
+                    return ((x1, y1 - 1), (x1, y1))
             elif direction == 6:
                 if canGo(x1, y1 -1) and canGo(x2, y2 - 1):
-                    return [(x2, y2 - 1), (x2, y2)]
+                    return ((x2, y2 - 1), (x2, y2))
             elif direction == 7:
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
-                    return [(x2, y2), (x2, y2 + 1)]
+                    return ((x2, y2), (x2, y2 + 1))
         else:
             if direction == 0:
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
-                    return [(x1 + 1, y1), (x2 + 1, y2)]
+                    return ((x1 + 1, y1), (x2 + 1, y2))
             elif direction == 1:
                 if canGo(x2, y2 + 1):
-                    return [(x2, y2), (x2, y2 + 1)]
+                    return ((x2, y2), (x2, y2 + 1))
             elif direction == 2:
                 if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
-                    return [(x1 -1, y1), (x2 - 1, y2)]
+                    return ((x1 -1, y1), (x2 - 1, y2))
             elif direction == 3:
                 if canGo(x1, y1 - 1):
-                    return [(x1, y1 - 1), (x1, y1)]
+                    return ((x1, y1 - 1), (x1, y1))
             elif direction == 4:
                 if canGo(x1 - 1, y1) and canGo(x2, y2 - 1):
-                    return [(x1 - 1, y1), (x1, y1)]
+                    return ((x1 - 1, y1), (x1, y1))
             elif direction == 5:
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
-                    return [(x1, y1), (x1 + 1, y1)]
+                    return ((x1, y1), (x1 + 1, y1))
             elif direction == 6:
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
-                    return [(x2, y2), (x2 + 1, y2)]
+                    return ((x2, y2), (x2 + 1, y2))
             elif direction == 7:
                 if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
-                    return [(x2 - 1, y2), (x2, y2)]
+                    return ((x2 - 1, y2), (x2, y2))
 
         return None
 
@@ -95,9 +97,11 @@ def solution(board):
         for i in range(8):
             _next = move(last, i)
             if _next is not None and _next not in dronFoot:
+                if _next in visited: continue
                 _dronFoot = dronFoot.copy()
                 _dronFoot.append(_next)
                 queue.append(_dronFoot)
+                visited[_next] = 1
 
     return -1
 
