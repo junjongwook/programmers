@@ -6,7 +6,6 @@
 
 def solution(gems):
     width = len(gems)
-    answer = [0, width - 1]
     d = dict()
     for g in gems:
         d.setdefault(g, 0)
@@ -53,3 +52,7 @@ if __name__ == '__main__':
     result = solution(["A", "A", "B"])
     print(f'result = {result}')
     assert result == [2, 3]
+
+    result = solution(["A", "B", "A"])
+    print(f'result = {result}')
+    assert result == [1, 2]
