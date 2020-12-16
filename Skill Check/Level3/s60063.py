@@ -34,53 +34,53 @@ def solution(board):
         (x1, y1), (x2, y2) = dron
         garo = y1 == y2     # 가로로 되어 있으면 True, 세로로 되어 있으면 False
         if garo:
-            if direction == 0:
+            if direction == 0:  # 우
                 if canGo(x2 + 1, y2):
                     return ((x2, y2), (x2 + 1, y2))
-            elif direction == 1:
+            elif direction == 1: # 하
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
                     return ((x1, y1 + 1), (x2, y2 + 1))
-            elif direction == 2:
+            elif direction == 2: # 좌
                 if canGo(x1 - 1, y1):
                     return ((x1 - 1, y1), (x1, y1))
-            elif direction == 3:
+            elif direction == 3: # 상
                 if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
                     return ((x1, y1 -1), (x2, y2 - 1))
-            elif direction == 4:
+            elif direction == 4: # 왼 기준 시계방향   
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
                     return ((x1, y1), (x1, y1 + 1))
-            elif direction == 5:
+            elif direction == 5: # 왼 기준 반시계 방향
                 if canGo(x1, y1 - 1) and canGo(x2, y2 - 1):
                     return ((x1, y1 - 1), (x1, y1))
-            elif direction == 6:
+            elif direction == 6: # 오른 기준 시계 방향
                 if canGo(x1, y1 -1) and canGo(x2, y2 - 1):
                     return ((x2, y2 - 1), (x2, y2))
-            elif direction == 7:
+            elif direction == 7: # 오른 기준 반시계 방향
                 if canGo(x1, y1 + 1) and canGo(x2, y2 + 1):
                     return ((x2, y2), (x2, y2 + 1))
         else:
-            if direction == 0:
+            if direction == 0:  # 우
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
                     return ((x1 + 1, y1), (x2 + 1, y2))
-            elif direction == 1:
+            elif direction == 1: # 하
                 if canGo(x2, y2 + 1):
                     return ((x2, y2), (x2, y2 + 1))
-            elif direction == 2:
+            elif direction == 2: # 좌
                 if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
                     return ((x1 -1, y1), (x2 - 1, y2))
-            elif direction == 3:
+            elif direction == 3: # 상
                 if canGo(x1, y1 - 1):
                     return ((x1, y1 - 1), (x1, y1))
-            elif direction == 4:
-                if canGo(x1 - 1, y1) and canGo(x2, y2 - 1):
+            elif direction == 4: # 위 기준으로 시계 방향
+                if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
                     return ((x1 - 1, y1), (x1, y1))
-            elif direction == 5:
+            elif direction == 5: # 위 기준으로 반시계 방향
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
                     return ((x1, y1), (x1 + 1, y1))
-            elif direction == 6:
+            elif direction == 6: # 아래 기준으로 시계 방향
                 if canGo(x1 + 1, y1) and canGo(x2 + 1, y2):
                     return ((x2, y2), (x2 + 1, y2))
-            elif direction == 7:
+            elif direction == 7: # 아래 기준으로 반시계 방향
                 if canGo(x1 - 1, y1) and canGo(x2 - 1, y2):
                     return ((x2 - 1, y2), (x2, y2))
 
@@ -96,8 +96,7 @@ def solution(board):
 
         for i in range(8):
             _next = move(last, i)
-            if _next is not None and _next not in dronFoot:
-                if _next in visited: continue
+            if _next is not None and _next not in visited:
                 _dronFoot = dronFoot.copy()
                 _dronFoot.append(_next)
                 queue.append(_dronFoot)
@@ -111,15 +110,16 @@ if __name__ == '__main__':
     print(f'reulst = {result}')
     assert result == 7
 
-#     result = solution([[0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 1], [0, 0, 1, 0, 0, 0, 0]]
-# )
-#     print(f'result = {result}')
-#     assert result == 21
+    result = solution([[0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 1], [0, 0, 1, 0, 0, 0, 0]]
+)
+    print(f'result = {result}')
+    assert result == 21
 
-    # result = solution([[0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0, 0]])
-    # print(f'result = {result}')
-    # assert result == 11
+    result = solution([[0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 0], [0, 0, 1, 0, 0, 0, 0]])
+    print(f'result = {result}')
+    assert result == 11
 
-    # result = solution([[0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0]])
-    # print(f'result = {result}')
-    # assert result == 33
+    result = solution([[0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 0]])
+    print(f'result = {result}')
+    assert result == 33
+
