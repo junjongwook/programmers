@@ -6,29 +6,31 @@
 
 def solution(gems):
     width = len(gems)
-    answer = [0, width-1]
-    _max = len(set(gems))
+    answer = [0, width - 1]
+    d = dict()
+    for g in gems:
+        d.setdefault(g, 0)
+        d[g] += 1
 
-
-    start = 0
-    while start < width:
-        # print(f'start = {start}')
-        temp = set()
-        for i in range(start, width):
-            temp.add(gems[i])
-            l = len(temp)
-            if l == 1: start = i
-            if l == _max:
-                if answer[1] - answer[0] > i - start:
-                    answer = [start, i]
-                    break
-        else:
+    # 뒤에서 잘라본다.
+    end = width
+    for i in range(width - 1, -1, -1):
+        if d[gems[i]] == 1:
+            end = i + 1
             break
+        else:
+            d[gems[i]] -= 1
 
-        start = start + 1
+    # 이제는 앞에서 잘라본다.
+    start = 1
+    for j in range(0, width):
+        if d[gems[j]] == 1:
+            start = j + 1
+            break
+        else:
+            d[gems[j]] -= 1
 
-    answer = [answer[0] + 1, answer[1] + 1]
-    return answer
+    return [start, end]
 
 
 if __name__ == '__main__':
@@ -47,3 +49,7 @@ if __name__ == '__main__':
     result = solution(["ZZZ", "YYY", "NNNN", "YYY", "BBB"])
     print(f'result = {result}')
     assert result == [1, 5]
+
+    result = solution(["A", "A", "B"])
+    print(f'result = {result}')
+    assert result == [2, 3]
