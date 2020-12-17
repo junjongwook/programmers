@@ -7,52 +7,24 @@
 def solution(gems):
     width = len(gems)
     d = dict()
-    for g in gems:
-        d.setdefault(g, 0)
-        d[g] += 1
-    d2 = d.copy()
+    for g in gems:  # 개별 보석의 개수 초기화
+        d[g] = 0
 
-    answer = [1, width - 1]
-
-    # 뒤에서 잘라본다.
-    end = width
-    for i in range(width - 1, -1, -1):
-        if d[gems[i]] == 1:
-            end = i + 1
-            break
+    answer = [0, width - 1]
+    left, right = 0, 0
+    d[gems[0]] = 1
+    while left <= right and right < width:
+        if 0 not in d.values():
+            if answer[1] - answer[0] > right - left:
+                answer = [left, right]
+            d[gems[left]] -= 1
+            left += 1
         else:
-            d[gems[i]] -= 1
-    # 이제는 앞에서 잘라본다.
-    start = 1
-    for j in range(0, width):
-        if d[gems[j]] == 1:
-            start = j + 1
-            break
-        else:
-            d[gems[j]] -= 1
+            right += 1
+            if right < width:
+                d[gems[right]] += 1
 
-    # 앞에서부터 자르는 걸 먼저 해 본다.
-    start2 = 1
-    for i in range(0, width):
-        if d2[gems[i]] == 1:
-            start2 = i + 1
-            break
-        else:
-            d2[gems[i]] -=1
-    # 뒤에서 자르는 걸 해 본다.
-    end2 = width
-    for j in range(width - 1, -1, -1):
-        if d2[gems[j]] == 1:
-            end2 = j + 1
-            break
-        else:
-            d2[gems[j]] -= 1
-
-    if end2 - start2 < end - start:
-        answer = [start2, end2]
-    else:
-        answer = [start, end]
-
+    answer = [answer[0] + 1, answer[1] + 1]
     return answer
 
 
