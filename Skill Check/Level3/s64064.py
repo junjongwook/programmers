@@ -24,18 +24,15 @@ def solution(user_id, banned_id):
         banned_ids = queue.popleft()
         # print(f'banned_ids = {banned_ids}')
         if len(banned_ids) == width:
-            temp = set(banned_ids)
-            if len(temp) < width:
-                pass
-            elif temp not in banned_list:
+            temp = sorted(banned_ids)
+            if temp not in banned_list:
                 banned_list.append(temp)
-            else:
-                pass
             continue
 
         index = len(banned_ids)
         for id in sanction[index]:
-            queue.append(banned_ids + (id,))
+            if id not in banned_ids:
+                queue.append(banned_ids + (id,))
     # print(f'banned_list = {banned_list}')
     answer = len(banned_list)
 
