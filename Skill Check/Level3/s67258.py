@@ -9,19 +9,26 @@ def solution(gems):
     d = dict()
     for g in gems:  # 개별 보석의 개수 초기화
         d[g] = 0
+    totalKinds = len(d)
 
     answer = [0, width - 1]
     left, right = 0, 0
     d[gems[0]] = 1
+    kinds = 1
     while left <= right and right < width:
-        if 0 not in d.values():
+        if kinds == totalKinds:
             if answer[1] - answer[0] > right - left:
                 answer = [left, right]
+
+            if d[gems[left]] == 1:
+                kinds -= 1
             d[gems[left]] -= 1
             left += 1
         else:
             right += 1
             if right < width:
+                if d[gems[right]] == 0:
+                    kinds += 1
                 d[gems[right]] += 1
 
     answer = [answer[0] + 1, answer[1] + 1]
