@@ -13,9 +13,11 @@ def solution(a):
     # print(f'cnt = {cnt}')
 
     answer = 0
-    for k, v in cnt.items():
+    _cnt = [(k, v) for k, v in cnt.items()]
+    _cnt.sort(key=lambda x: -x[1])
+    for k, v in _cnt:
         # items 는 순서대로 나오지 않네
-        # if answer >= v * 2: break
+        if answer >= v * 2: break
         prev = None
         temp = []
         for i in range(width):
