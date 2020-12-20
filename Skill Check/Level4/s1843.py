@@ -3,9 +3,9 @@
 사칙연산 : https://programmers.co.kr/learn/courses/30/lessons/1843?language=python3
 """
 
-answer = -float('inf')
 def solution(arr):
-        global answer
+        maxMemory = dict()
+        minMemory = dict()
 
         def calc(arr3):
             # print(f'calc arr3 = {arr3}')
@@ -15,19 +15,50 @@ def solution(arr):
             elif op == '-':
                 return a - b
 
-        def DFS(arr2):
-            # print(f'arr2 = {arr2}')
-            global answer
-            if len(arr2) == 3:
-                answer = max(answer, calc(arr2))
-                # print(f'answer = {answer}')
-                return
+        def MAX(arr):
+            # print(f'MAX arr = {arr}')
+            if len(arr) == 1: return int(arr[0])
+            if len(arr) == 3: return calc(arr)
 
-            for i in range(0, len(arr2) - 1, 2):
-                # print(f'range arr2 = {arr2}')
-                DFS(arr2[:i] + [str(calc(arr2[i:i + 3]))] + arr2[i + 3:])
+            key = ''.join(arr)
+            if key in maxMemory:
+                return maxMemory[key]
 
-        DFS(arr)
+            _max = -float('inf')
+            for i in range(1, len(arr)-1, 2):
+                # print(f'MAX i = {i}, arr = {arr}')
+                if arr[i] == '+':
+                    _temp = MAX(arr[:i]) + MAX(arr[i+1:])
+                else:
+                    _temp = MAX(arr[:i]) - MIN(arr[i+1:])
+                if _temp > _max: _max = _temp
+
+            maxMemory[key] = _max
+
+            return _max
+
+        def MIN(arr):
+            # print(f'MIN arr = {arr}')
+            if len(arr) == 1: return int(arr[0])
+            if len(arr) == 3: return calc(arr)
+
+            key = ''.join(arr)
+            if key in minMemory:
+                return minMemory[key]
+
+            _min = float('inf')
+            for i in range(1, len(arr)-1, 2):
+                if arr[i] == '+':
+                    _temp = MIN(arr[:i]) + MIN(arr[i+1:])
+                else:
+                    _temp = MIN(arr[:i]) - MAX(arr[i+1:])
+                if _temp < _min: _min = _temp
+
+            minMemory[key] = _min
+
+            return _min
+
+        answer = MAX(arr)
 
         return answer
 
