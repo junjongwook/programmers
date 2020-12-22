@@ -12,33 +12,36 @@ def solution(land, height):
     dy = [0, 1, 0, -1]
 
     from collections import deque
+    import heapq
     ladder = []
     queue = deque()
     queue.append((0, 0))
+    visited[0][0] = 1
     count = 0
 
     while queue:
         y, x = queue.popleft()
-        if visited[y][x] == 0:
-            visited[y][x] = 1
-            for d in range(4):
-                _y = y + dy[d]
-                _x = x + dx[d]
-                if 0 <= _y < N and 0 <= _x < N:
-                    if visited[_y][_x] == 1: continue
-                    _height = abs(land[y][x] - land[_y][_x])
-                    if _height > height:
-                        ladder.append((_height, _y, _x))
-                    else:
-                        queue.append((_y, _x))
+
+        for d in range(4):
+            _y = y + dy[d]
+            _x = x + dx[d]
+            if 0 <= _x < N and 0 <= _y < N:
+                if visited[_y][_x] == 1: continue
+                _height = abs(land[y][x] - land[_y][_x])
+                if _height > height:
+                    heapq.heappush(ladder, (_height, _y, _x))
+                else:
+                    queue.append((_y, _x))
+                    visited[_y][_x] = 1
 
         if len(queue) == 0:
-            ladder.sort(reverse=True)
+
             while len(ladder) > 0:
-                _height, _y, _x = ladder.pop()
+                _height, _y, _x = heapq.heappop(ladder)
                 if visited[_y][_x] == 1: continue
                 answer = answer + _height
                 queue.append((_y, _x))
+                visited[_y][_x] = 1
                 break
 
     return answer
