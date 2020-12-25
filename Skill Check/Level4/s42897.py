@@ -26,7 +26,7 @@ def solution(money):
 
     # 첫번째 집부터 방문할 경우 끝집은 가지 않는다.
     q = {0: 0, 1: money[0]}
-    for i in range(1, width):
+    for i in range(1, width - 1):
         notVisited = max(q[0], q[1])
         visited = q[0] + money[i]
         q = {0: notVisited, 1: visited}
