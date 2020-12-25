@@ -2,7 +2,7 @@
 """
 도둑질 : https://programmers.co.kr/learn/courses/30/lessons/42897
 """
-from collections import deque
+
 
 def solution(money):
     answer = 0
@@ -11,36 +11,26 @@ def solution(money):
     if len(money) == 3: return max(money)
 
     width = len(money)
-    # 첫번째 집을 방문했을 경우는 마지막 집은 방문하지 않는다.
-    queue = deque([(money[0], 1)])
-    for i in range(1, width - 1):
-        _queue = deque([])
-        while queue:
-            q, v = queue.popleft()
-            if v == 1:
-                _queue.append((q, 0))
-            else:
-                _queue.append((q, 0))
-                if money[i] > 0:    # 돈이 없는 집은 방문하지 않는다.
-                    _queue.append((q + money[i], 1))
-        queue = _queue
-    answer = max(queue)[0]
-
-    # 첫번째 집을 방문하지 않았을 경우는 마지막 집을 방문할 수 있다.
-    queue = deque([(money[1], 1)])
+    # 두번째 집부터 방문할 경우 끝집까지 갈 수 있다.
+    q = {0: 0, 1: money[1]}    # 2번째 집(index : 1), 0 은 방문하지 않음, 1 : 방문함
     for i in range(2, width):
-        _queue = deque([])
-        while queue:
-            q, v = queue.popleft()
-            if v == 1:
-                _queue.append((q, 0))
-            else:
-                _queue.append((q, 0))
-                if money[i] > 0:    # 돈이 없는 집은 방문하지 않는다.
-                    _queue.append((q + money[i], 1))
-        queue = _queue
+        # 바로 앞의 집을 방문하지 않은 경우의 값에 대해서
+        notVisited = max(q[0], q[1])
+        visited = q[0] + money[i]
+        q = {0: notVisited, 1 : visited}
+    answer = max(q[0], q[1])
 
-    answer = max(answer, max(queue)[0])
+    # 첫번째 집이 money 가 0이면 굳이 필요없다.
+    if money[0] == 0:
+        return answer
+
+    # 첫번째 집부터 방문할 경우 끝집은 가지 않는다.
+    q = {0: 0, 1: money[0]}
+    for i in range(1, width):
+        notVisited = max(q[0], q[1])
+        visited = q[0] + money[i]
+        q = {0: notVisited, 1: visited}
+    answer = max(answer, max(q[0], q[1]))
 
     return answer
 
