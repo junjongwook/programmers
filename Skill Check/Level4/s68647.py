@@ -2,7 +2,7 @@
 """
 짝수 행 세기 : https://programmers.co.kr/learn/courses/30/lessons/68647?language=python3
 """
-from functools import reduce
+from math import factorial
 
 CDict = dict()
 def solution(a):
@@ -14,9 +14,9 @@ def solution(a):
     def C(n, r):
         if (n, r) in CDict:
             return CDict[(n, r)]
-        _n = reduce(lambda x, y: x * y, range(1, n + 1), 1)
-        _r1 = reduce(lambda x, y: x * y, range(1, r + 1), 1)
-        _r2 = reduce(lambda x, y: x * y, range(1, n-r + 1), 1)
+        _n = factorial(n)
+        _r1 = factorial(r)
+        _r2 = factorial(n-r)
         CDict[(n, r)] = _n // (_r1 * _r2)
 
         return CDict[(n, r)]
@@ -51,6 +51,7 @@ def solution(a):
                 if (rows - j) < (oneCount - o): continue
                 target = j - o + (oneCount - o)     # 짝수행을 o 개만큼 없애고, 홀수행을 oneCount - o 만큼 없애기
                 f[i][target] += f[i-1][j] * C(j, o) * C(rows - j, oneCount - o)
+                f[i][target] %= 10_000_019
 
     # print(*f, sep='\n')
     answer = f[-1][-1]
