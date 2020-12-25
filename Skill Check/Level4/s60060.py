@@ -2,11 +2,12 @@
 """
 가사 검색 : https://programmers.co.kr/learn/courses/30/lessons/60060?language=python3
 """
+from collections import defaultdict
 
 def solution(words, queries):
     answer = []
-    d = dict()      # startswith
-    d2 = dict()     # endswith
+    d = defaultdict(dict)      # startswith
+    d2 = defaultdict(dict)     # endswith
     for word in words:
         width = len(word)
         for i in range(1, width):
@@ -14,10 +15,14 @@ def solution(words, queries):
             _last = width - i
             _end = word[-i:]
             _first = width - i
-            d.setdefault(_start, [])
-            d[_start].append(_last)
-            d2.setdefault(_end, [])
-            d2[_end].append(_first)
+            if _last in d[_start]:
+                d[_start][_last] += 1
+            else:
+                d[_start][_last] = 1
+            if _first in d2[_end]:
+                d2[_end][_first] += 1
+            else:
+                d2[_end][_first] = 1
     # print(f'd = {d}')
     # print(f'd2 = {d2}')
 
@@ -27,16 +32,16 @@ def solution(words, queries):
             index = width - query.count('?')
             start = query[:index]
             last = width - index
-            if start in d:
-                answer.append(d[start].count(last))
+            if last in d[start]:
+                answer.append(d[start][last])
             else:
                 answer.append(0)
         elif query[0] == '?':
             index = query.count('?')
             end = query[index:]
             first = index
-            if end in d2:
-                answer.append(d2[end].count(first))
+            if first in d2[end]:
+                answer.append(d2[end][first])
             else:
                 answer.append(0)
 
