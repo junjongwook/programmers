@@ -8,6 +8,7 @@ class Node:
     def __init__(self, value):
         self.value = value
         self.children = dict()
+        self.childrenCount = 0
 
     def hasChildCharacter(self, c):
         if c in self.children:
@@ -27,98 +28,81 @@ class Node:
     def setChildNode(self, c):
         self.children[c] = Node(c)
 
-    def isLeaf(self):
-        if len(self.children) == 0:
-            return True
-        else:
-            return False
-
     def __str__(self, level=0):
-        temp = '\t' * level + repr(self.value) + '\n'
+        temp = '\t' * level + f'value: {self.value}, childrenCount = {self.childrenCount}' + '\n'
         for child in self.children.values():
             temp += child.__str__(level + 1)
         return temp
 
-root = Node('')     # 정방향으로 확인할 경우의 root
-tail = Node('')     # 역방향에서 확인할 경우의 root
 
-def makeTree(w):
-    curr = root
+dictionary = dict()             # 정방향 사전
+dictionary2 = dict()            # 역방향 사전
+
+
+def makeTree(w, width):
+    dictionary.setdefault(width, Node(''))
+    curr = dictionary.get(width)
     for c in w:
+        curr.childrenCount += 1
         if not curr.hasChildCharacter(c):
             curr.setChildNode(c)
         curr = curr.getChildNode(c)
 
-def makeReverseTree(w):
-    curr = tail
+def makeReverseTree(w, width):
+    dictionary2.setdefault(width, Node(''))
+    curr = dictionary2.get(width)
     index = len(w)
     for i in range(index - 1, -1, -1):
+        curr.childrenCount += 1
         if not curr.hasChildCharacter(w[i]):
             curr.setChildNode(w[i])
         curr = curr.getChildNode(w[i])
 
-
 def search(query):
+    width = len(query)
     if query[0] == '?':
-        return searchBackward(query)
+        return searchBackward(query, width)
     else:
-        return searchForward(query)
+        return searchForward(query, width)
 
-def searchForward(query):
+def searchForward(query, width):
     answer = 0
-    width = len(query)
-    stack = [root]
-    for i in range(width - 1):
-        _stack = []
-        while stack:
-            node = stack.pop()
-            if query[i] == '?':
-                _stack.extend(node.getChildren())
-            elif node.hasChildCharacter(query[i]):
-                _stack.append(node.getChildNode(query[i]))
-        stack = _stack
-    # 마지막은 항상 '?' 이므로
-    for s in stack:
-        children = s.getChildren()
-        for child in children:
-            if child.isLeaf():
-                answer += 1
+    if width not in dictionary:
+        return 0
+    curr = dictionary.get(width)
+    for i in range(width):
+        if query[i] == '?':
+            answer = curr.childrenCount
+            break
+        if curr.hasChildCharacter(query[i]):
+            curr = curr.getChildNode(query[i])
 
     return answer
 
 
-def searchBackward(query):
+def searchBackward(query, width):
     answer = 0
-    width = len(query)
-    stack = [tail]
+    if width not in dictionary2:
+        return 0
+    curr = dictionary2.get(width)
     for i in range(width - 1, 0, -1):
-        _stack = []
-        while stack:
-            node = stack.pop()
-            if query[i] == '?':
-                _stack.extend(node.getChildren())
-            elif node.hasChildCharacter(query[i]):
-                _stack.append(node.getChildNode(query[i]))
-        stack = _stack
-    # 마지막은 항상 '?' 이므로
-    for s in stack:
-        children = s.getChildren()
-        for child in children:
-            if child.isLeaf():
-                answer += 1
+        if query[i] == '?':
+            answer = curr.childrenCount
+            break
+        if curr.hasChildCharacter(query[i]):
+            curr = curr.getChildNode(query[i])
 
     return answer
+
 
 def solution(words, queries):
     answer = []
 
     for word in words:
-        makeTree(word)
-        makeReverseTree(word)
+        makeTree(word, len(word))
+        makeReverseTree(word, len(word))
 
-    # print(root)
-    # print(tail)
-    #
+    # print(f'dictionary = {repr(dictionary)}')
     # print(searchForward('fro??'))
     # print(searchBackward('????o'))
     for query in queries:
