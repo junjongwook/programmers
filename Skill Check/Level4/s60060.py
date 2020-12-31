@@ -76,6 +76,8 @@ def searchForward(query, width):
             break
         if curr.hasChildCharacter(query[i]):
             curr = curr.getChildNode(query[i])
+        else:
+            break
 
     return answer
 
@@ -85,17 +87,22 @@ def searchBackward(query, width):
     if width not in dictionary2:
         return 0
     curr = dictionary2.get(width)
-    for i in range(width - 1, 0, -1):
+    for i in range(width - 1, -1, -1):
         if query[i] == '?':
             answer = curr.childrenCount
             break
         if curr.hasChildCharacter(query[i]):
             curr = curr.getChildNode(query[i])
+        else:
+            break
 
     return answer
 
 
 def solution(words, queries):
+    global dictionary, dictionary2
+    dictionary = dict()
+    dictionary2 = dict()
     answer = []
 
     for word in words:
@@ -103,6 +110,7 @@ def solution(words, queries):
         makeReverseTree(word, len(word))
 
     # print(f'dictionary = {repr(dictionary)}')
+    # print(f'dictionary2[2] = {repr(dictionary2[2])}')
     # print(searchForward('fro??'))
     # print(searchBackward('????o'))
     for query in queries:
@@ -112,6 +120,14 @@ def solution(words, queries):
 
 
 if __name__ == '__main__':
-    result = solution(["frodo", "front", "frost", "frozen", "frame", "kakao"], ["fro??", "????o", "fr???", "fro???", "pro?"])
+    # result = solution(["frodo", "front", "frost", "frozen", "frame", "kakao"], ["fro??", "????o", "fr???", "fro???", "pro?"])
+    # print(f'result = {result}')
+    # assert result == [3, 2, 4, 1, 0]
+    #
+    # result = solution(["frodo", "front", "frost", "frozen", "frame", "kakao"], ["?????", "??????"])
+    # print(f'result = {result}')
+    # assert result == [5, 1]
+
+    result = solution(["AB", "AC"], ["??", "A?", "?B"])
     print(f'result = {result}')
-    assert result == [3, 2, 4, 1, 0]
+    assert result == [2, 2, 1]
