@@ -5,18 +5,16 @@
 
 
 def solution(begin, end):
-    answer = []
+    answer = [0] * (end - begin + 1)
+    maxNum = end // 2
 
-    def block(num):
-        if num == 1: return 0
-        for d in range(2, num+1):
-            q, r = divmod(num, d)
-            if r == 0:
-                return q
-        return 0
-
-    for n in range(begin, end+1):
-        answer.append(block(n))
+    for n in range(maxNum, 0, -1):
+        start = begin // n * n
+        start = start + n if start < begin else start
+        start = n * 2 if n * 2 > start else start
+        for i in range(start, end + 1, n):
+            if answer[i - begin] == 0:
+                answer[i - begin] = n
 
     return answer
 
