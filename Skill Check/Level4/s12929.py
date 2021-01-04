@@ -6,23 +6,20 @@
 answer = 0
 def solution(n):
 
-    def DFS(arr):
+    def DFS(arr, p, m):
         global answer
         if len(arr) == n * 2:
             # print(f'arr = {arr}')
             answer = answer + 1
             return
 
-        plusCount = arr.count(1)
-        minusCount = arr.count(-1)
+        if p < n:
+            DFS(arr + [1], p + 1, m)
 
-        if plusCount < n:
-            DFS(arr + [1])
+        if m < n and sum(arr) > 0:
+            DFS(arr + [-1], p, m + 1)
 
-        if minusCount < n and sum(arr) > 0:
-            DFS(arr + [-1])
-
-    DFS([])
+    DFS([], 0, 0)
 
     return answer
 
