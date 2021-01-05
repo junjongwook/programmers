@@ -17,7 +17,7 @@ def solution(land, P, Q):
             maxH = max(maxH, height)
             block.setdefault(height, 0)
             block[height] += 1
-    # print(block)
+    print(block)
 
     for h in range(minH, maxH+1):
         _sum = 0
@@ -28,7 +28,7 @@ def solution(land, P, Q):
                 _sum += (h - _h) * _n * P
         if _sum < answer:
             answer = _sum
-        # print(f'h = {h}, _sum = {_sum}')
+        print(f'h = {h}, _sum = {_sum}')
 
     return answer
 
