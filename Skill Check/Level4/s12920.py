@@ -10,6 +10,8 @@ def solution(n, cores):
     answer = 0
     N = len(cores)
 
+    '''
+    이게 시간이 많이 걸리려나? 이걸 삭제하고 해보자.
     def lcm(x, y, /):
         return x * y // gcd(x, y)
 
@@ -20,6 +22,7 @@ def solution(n, cores):
 
     while n >= temp:
         n -= temp
+    '''
 
     def throughput(t:int, /):   # 시작한 개수로 변경 (완료 기준이 아니다)
         total = 0
@@ -30,7 +33,7 @@ def solution(n, cores):
 
         return total
 
-    left, right = 0, _lcm
+    left, right = 0, n * cores[0]
     later = 0
     l = 0
     r = throughput(right)
