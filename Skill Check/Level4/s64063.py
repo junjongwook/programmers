@@ -2,23 +2,31 @@
 """
 호텔 방 배정 : https://programmers.co.kr/learn/courses/30/lessons/64063?language=python3
 """
-
+from bisect import bisect_right, insort_right
 
 def solution(k, room_number):
     answer = []
     N = len(room_number)
-    reserved = set()
+    reserved = []
     for i in range(N):
         num = room_number[i]
-        if num not in reserved:
-            reserved.add(num)
+        rindex = bisect_right(reserved, num)
+        if rindex == 0 or reserved[rindex-1] < num:
             answer.append(num)
+            insort_right(reserved, num)
         else:
-            for j in range(num + 1, k + 1):
-                if j not in reserved:
-                    reserved.add(j)
-                    answer.append(j)
+            prev = rindex - 1
+            for j in range(rindex, len(reserved)):
+                if reserved[prev] + 1 == reserved[j]:
+                    prev = j
+                else:
+                    answer.append(reserved[prev] + 1)
+                    insort_right(reserved, reserved[prev] + 1)
                     break
+            else:
+                answer.append(reserved[len(reserved) - 1] + 1)
+                insort_right(reserved, reserved[len(reserved) - 1] + 1)
+
     return answer
 
 
