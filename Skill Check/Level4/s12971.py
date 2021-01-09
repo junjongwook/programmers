@@ -13,18 +13,17 @@ def solution(sticker):
     temp = [0] * (N - 1)
     answer = 0
     temp[0] = sticker[0]
-    temp[2] = temp[0] + sticker[2]
-    for i in range(3, N - 1):
-        temp[i] = max(sticker[i] + temp[i-2], sticker[i] + temp[i-3])
+    temp[1] = temp[0]
+    for i in range(2, N - 1):
+        temp[i] = max(sticker[i] + temp[i-2], temp[i-1])
         if temp[i] > answer: answer = temp[i]
 
     # 1번째부터 시작할 경우는 맨 끝까지 갈 수 있다.
     temp = [0] * N
     temp[0] = 0
     temp[1] = sticker[1]
-    temp[2] = 0
-    for i in range(3, N):
-        temp[i] = max(sticker[i] + temp[i-2], sticker[i] + temp[i-3])
+    for i in range(2, N):
+        temp[i] = max(sticker[i] + temp[i-2], temp[i-1])
         if temp[i] > answer: answer = temp[i]
 
     return answer
