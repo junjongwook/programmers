@@ -7,16 +7,16 @@
 def solution(k, room_number):
     answer = []
     N = len(room_number)
-    reserved = [0] * (k + 1)
+    reserved = set()
     for i in range(N):
         num = room_number[i]
-        if reserved[num] == 0:
-            reserved[num] = 1
+        if num not in reserved:
+            reserved.add(num)
             answer.append(num)
         else:
             for j in range(num + 1, k + 1):
-                if reserved[j] == 0:
-                    reserved[j] = 1
+                if j not in reserved:
+                    reserved.add(j)
                     answer.append(j)
                     break
     return answer
