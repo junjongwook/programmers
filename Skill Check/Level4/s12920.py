@@ -2,27 +2,11 @@
 """
 선입 선출 스케쥴링 : https://programmers.co.kr/learn/courses/30/lessons/12920?language=python3
 """
-from math import gcd
-from functools import reduce
 
 
 def solution(n, cores):
     answer = 0
     N = len(cores)
-
-    '''
-    이게 시간이 많이 걸리려나? 이걸 삭제하고 해보자.
-    def lcm(x, y, /):
-        return x * y // gcd(x, y)
-
-    _lcm = reduce(lcm, cores)
-    temp = 0
-    for i in range(N):
-        temp += _lcm // cores[i]
-
-    while n >= temp:
-        n -= temp
-    '''
 
     def throughput(t:int, /):   # 시작한 개수로 변경 (완료 기준이 아니다)
         total = 0
@@ -33,7 +17,10 @@ def solution(n, cores):
 
         return total
 
-    left, right = 0, n * cores[0]
+    _cores = sum([1/core for core in cores])
+    left = 0
+    right = int(n / _cores) + 1
+
     later = 0
     l = 0
     r = throughput(right)
@@ -52,7 +39,7 @@ def solution(n, cores):
     # print(f'later = {later}')
     # later time 시점이전까지의 process 진행 상황을 확인하고
     # process 상의 상태를 만든다.
-    n = n - throughput(later)   # 이미 완료되어서 없어진 대상
+    n = n - throughput(later)   # 이미 시작된 대상들은 개수에서 제외
     process = [0] * N
     target = []
     for i in range(N):
