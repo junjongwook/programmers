@@ -13,14 +13,17 @@ def solution(k, room_number):
             answer.append(room)
             reserved[room] = room + 1
         else:
+            changable = [room]
             other = reserved[room]
             while True:
                 if other not in reserved:
                     answer.append(other)
-                    reserved[room] = other + 1
                     reserved[other] = other + 1
+                    for c in changable:
+                        reserved[c] = other + 1
                     break
                 else:
+                    changable.append(other)
                     other = reserved[other]
 
     return answer
