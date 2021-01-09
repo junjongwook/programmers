@@ -7,6 +7,7 @@
 def solution(n, cores):
     answer = 0
     N = len(cores)
+    if n <= N: return n
 
     def throughput(t:int, /):   # 시작한 개수로 변경 (완료 기준이 아니다)
         total = 0
@@ -22,8 +23,6 @@ def solution(n, cores):
     right = int(n / _cores) + 1
 
     later = 0
-    l = 0
-    r = throughput(right)
     while left < right:
         mid = (left + right) // 2
         t = throughput(mid)
@@ -31,10 +30,8 @@ def solution(n, cores):
         if t < n:
             later = mid
             left = mid + 1
-            l = throughput(left)
         else:
             right = mid - 1
-            r = throughput(right)
 
     # print(f'later = {later}')
     # later time 시점이전까지의 process 진행 상황을 확인하고
