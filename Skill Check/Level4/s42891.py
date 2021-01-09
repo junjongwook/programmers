@@ -3,7 +3,7 @@
 무지의 먹방 라이브 : https://programmers.co.kr/learn/courses/30/lessons/42891?language=python3
 """
 import heapq
-
+from collections import deque
 
 def solution(food_times, k):
     answer = 0
@@ -12,31 +12,34 @@ def solution(food_times, k):
         heapq.heappush(heap, [times, i])
 
     prev = 0
-    _k = k
-    p = 0
-    while True:
+    while heap:
         l = len(heap)
-        t, i = heapq.heappop(heap)
-        if prev == t: continue
-        if l * (t - prev) < _k:
-            _k = _k - l * (t - prev)
-            prev = t
+        times, i = heapq.heappop(heap)
+        if times == prev: continue
+        if (times - prev) * l < k:
+            k = k - (times - prev) * l
+            prev = times
         else:
-            heap.append([t, i])
-            heap.sort(key=lambda x: x[1])
-            heap = [[a-prev, b] for a, b in heap]
+            heap.append([times, i])
             break
-    # print(heap)
-    # print(f'_k = {_k}')
+    else:
+        return -1
 
-    curr = 0
-    time = 0
-    while time < _k:
-        heap[curr][0] -= 1
-        curr = (curr + 1) % len(heap)
-        time = time + 1
+    heap.sort(key=lambda x: x[1])
+    q1 = deque(heap)
+    q2 = deque([])
+    for _ in range(k):
+        times, i = q1.popleft()
+        times = times - 1
+        if times > 0:
+            q2.append([times, i])
+        if len(q1) == 0:
+            q1 = q2
+            q2 = deque([])
+    else:
+        if len(q1) > 0: answer = q1[0][1]
+        else: answer = q2[0][1]
 
-    answer = heap[curr][1]
     return answer
 
 
@@ -52,3 +55,11 @@ if __name__ == '__main__':
     result = solution([4,2,3,6,7,1,5,8], 27)
     print(f'result = {result}')
     assert result == 5
+
+    result = solution([1, 1, 1], 10)
+    print(f'result = {result}')
+    assert result == -1
+
+    result = solution([1, 1, 2], 3)
+    print(f'result = {result}')
+    assert result == 3
