@@ -10,15 +10,18 @@ def solution(k, room_number):
     reserved = dict()
     for room in room_number:
         if room not in reserved:
-            reserved[room] = room + 1
             answer.append(room)
+            reserved[room] = room + 1
         else:
-            for other in range(reserved[room], k+1):
+            other = reserved[room]
+            while True:
                 if other not in reserved:
-                    reserved[other] = other + 1
-                    reserved[room] = other + 1
                     answer.append(other)
+                    reserved[room] = other + 1
+                    reserved[other] = other + 1
                     break
+                else:
+                    other = reserved[other]
 
     return answer
 
