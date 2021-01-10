@@ -2,21 +2,28 @@
 """
 단어 퍼즐 : https://programmers.co.kr/learn/courses/30/lessons/12983?language=python3
 """
-from collections import deque
 
 
 def solution(strs, t):
-    answer = -1
+    N = len(t)
+    strs = set(strs)
+    _max = 0
+    for str in strs:
+        _max = max(_max, len(str))
 
-    queue = deque([('', 0)])
-    while queue:
-        s, c = queue.popleft()
-        if s == t: return c
-        for str in strs:
-            _s = s + str
-            if t.startswith(_s):
-                queue.append((_s, c+1))
+    dp = [float('inf')] * (N + 1)
+    dp[0] = 0
+    for s in range(N):
+        end = min(s + _max + 1, N + 1)
+        for e in range(s+1, end):
+            word = t[s:e]
+            # print(f's = {s}, e = {e}, end = {end}, word = {word}')
+            if word in strs:
+                dp[e] = min(dp[e], dp[s] + 1)
+                # print(f's = {s}, e = {e}, dp = {dp}')
 
+    # print(f'dp = {dp}')
+    answer = dp[-1] if dp[-1] != float('inf') else -1
     return answer
 
 
