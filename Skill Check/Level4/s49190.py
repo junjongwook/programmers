@@ -8,7 +8,7 @@ def solution(arrows):
     answer = 0
     dxy = [
         (0, -1),
-        (1, 1),
+        (1, -1),
         (1, 0),
         (1, 1),
         (0, 1),
@@ -16,11 +16,12 @@ def solution(arrows):
         (-1, 0),
         (-1, -1)
     ]
-    exist = set()
-    curr = (0, 0)
-    visited = set(curr)
+    exist = set()   # 선들의 집합, 첫번째, 두번째 좌표를 정렬하면 하나만 있어도 되지 않을까?
+    curr = (0, 0)   # x, y 좌표
+    visited = set([curr]) # 방문한 좌표들
     for arrow in arrows:
         dx, dy = dxy[arrow]
+
         next = curr[0] + dx, curr[1] + dy
         edge = tuple(sorted([curr, next]))
         if next in visited and edge not in exist:
@@ -28,6 +29,8 @@ def solution(arrows):
         visited.add(next)
         exist.add(edge)
         curr = next
+        # print(f'visited = {visited}, exist = {exist}')
+
         # 칸을 한칸이 아닌 두칸씩으로 설정해서 사용한다. 대각선 때문...
         next = curr[0] + dx, curr[1] + dy
         edge = tuple(sorted([curr, next]))
@@ -36,6 +39,7 @@ def solution(arrows):
         visited.add(next)
         exist.add(edge)
         curr = next
+        # print(f'visited = {visited}, exist = {exist}')
 
     return answer
 
