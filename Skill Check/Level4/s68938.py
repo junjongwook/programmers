@@ -2,37 +2,48 @@
 """
 문자열의 아름다움 : https://programmers.co.kr/learn/courses/30/lessons/68938?language=python3
 """
-import sys
-sys.setrecursionlimit(10**6)
 
-d = dict()
-answer = 0
+
 def solution(s):
-    global d, answer
     answer = 0
     d = dict()
     N = len(s)
 
-    def segment(_s, _e):
-        global d, answer
-        if _s == _e: return 0   # 등록하지 않음
-        if (_s, _e) in d:
-            return d[(_s, _e)]
+    stack = [(0, N-1)]  # 0, N-1 일때의 최대값 구하기
+    while stack:
+        # print(f'd = {d}')
+        # print(f'stack = {stack}')
+        top = stack[-1]     # stack 의 맨 위의 값을 pop 하지 않고 참조
 
-        if s[_s] != s[_e]:
-            _count = _e - _s
-            segment(_s, _e - 1)
-            segment(_s + 1, _e)
-        else:
-            _count = max(segment(_s, _e - 1), segment(_s + 1, _e))
-        d[(_s, _e)] = _count
-        answer += _count
+        if top in d:        # 이미 계산한 적이 있는 구간이면 pass
+            stack.pop()
+            continue
 
-        return _count
+        if top[1] - top[0] == 1:   # 길이가 2개인 구간은 바로 계산할 수 있다. 0 아니면 1이다.
+            stack.pop()
+            if s[top[0]] == s[top[1]]:
+                d[top] = 0
+            else:
+                d[top] = 1
+            answer = answer + d[top]
+            continue
 
-    segment(0, N-1)
-    # print(f'd = {d}')
-    # answer = sum(d.values())
+        left = (top[0], top[1] - 1)         # 좌측끝부터 시작하는 것 하나 분리
+        right = (top[0] + 1, top[1])        # 우측끝까지 끝나는 것 하나 분리
+        if left in d and right in d:        # 두 값 모두 계산이 완료되어 있으면 
+            stack.pop()
+            if s[top[0]] == s[top[1]]:      # 현재 거의 최대 길이가 존재하는지 확인
+                d[top] = max(d[left], d[right])   # 없다면 아래 두 개 중의 최대값을 선택
+            else:
+                d[top] = top[1] - top[0]
+            answer = answer + d[top]
+            continue
+
+        # 처리가 안되면 right, left 를 stack 다시 넣어 둔다.
+        if right not in d:
+            stack.append(right)
+        if left not in d:
+            stack.append(left)
 
     return answer
 
