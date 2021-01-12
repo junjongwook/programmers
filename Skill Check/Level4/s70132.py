@@ -2,54 +2,13 @@
 """
 가짜 해밀토니안 : https://programmers.co.kr/learn/courses/30/lessons/70132
 """
+from collections import deque
 import sys
 sys.setrecursionlimit(10**6)
-adj = dict()
-drr = [0] * 200_003
-ans = 0
-
-def dfs(node, dep, pre):
-    # print(f'node = {node}, dep = {dep}, pre = {pre}')
-    drr[node] = dep
-    for there in adj[node]:
-        if there == pre: continue
-        dfs(there, dep + 1, node)
-
-
-def fun(node, pre):
-    global ans
-    a = []
-    b = []
-    for there in adj[node]:
-        if there == pre: continue
-        tem = fun(there, node)
-        a.append((tem[0], there))
-        b.append((tem[1], there))
-
-    if len(a) == 0:
-        ans = max(ans, 1 + drr[node])
-        return (1, 1)
-    elif len(a) == 1:
-        ans = max(ans, b[0][0] + 1 + drr[node])
-        return (a[0][0] + 1, b[0][0] + 1)
-    a.sort()
-    b.sort()
-    n = len(a)
-    if a[n-1][1] != b[n-1][1]:
-        ans = max(ans, b[n - 1][0] + b[n - 2][0] + 1 + drr[node])
-        return (a[n - 1][0] + 1, b[n - 1][0] + a[n - 1][0] + 1)
-    else:
-        ans = max(ans, b[n - 1][0] + b[n - 2][0] + 1 + drr[node])
-        return (a[n - 1][0] + 1, max(b[n - 1][0] + a[n - 2][0] + 1, b[n - 2][0] + a[n - 1][0] + 1))
 
 
 def solution(t):
-    global adj, drr, ans
     adj = dict()
-    drr = [0] * 200_003
-    ans = 0
-    answer = 0
-    n = len(t) + 1
     for v1, v2 in t:
         adj.setdefault(v1, [])
         adj.setdefault(v2, [])
@@ -57,24 +16,37 @@ def solution(t):
         adj[v2].append(v1)
     # print(f'adj = {adj}')
 
-    dfs(1, 0, -1)
-    temnode = 1
-    temdep = 0
-    for i in range(n):
-        if temdep < drr[i]:
-            temnode = i
-            temdep = drr[i]
+    N = len(t)
+    visited = [0] * (N + 1)
+    queue = deque([(t[0][0], 0)])
+    visited[t[0][0]] = 1
+    while queue:
+        v, d = queue.popleft()
+        # print(f'v = {v}, d = {d}')
+        for nv in adj[v]:
+            if visited[nv] == 1: continue
+            queue.append((nv, d+1))
+            visited[nv] = 1
 
-    dfs(temnode, 0, -1)
-    temdep = 0
-    for i in range(n):
-        if temdep < drr[i]:
-            temnode = i
-            temdep = drr[i]
+    start = v
+    # print(f'start = {start}')
 
-    dfs(temnode, 0, -1)
-    fun(temnode, -1)
-    answer = ans
+    def traverse(v, prev):
+        # print(f'v = {v}, prev = {v}')
+        temp = []
+        for nxt in adj[v]:
+            if nxt == prev: continue
+            temp.append(traverse(nxt, v))
+
+        if len(temp) == 0:
+            return 1
+        elif len(temp) < 3:
+            return sum(temp) + 1
+
+        temp.sort()
+        return sum(temp[-2:]) + 1
+
+    answer = traverse(start, -1)
 
     return answer
 
